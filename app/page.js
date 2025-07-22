@@ -1,102 +1,112 @@
-import Image from "next/image";
+"use client";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const router = useRouter();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleGetStarted = () => {
+    router.push("/dashboard");
+  };
+  const handleGethow = () => {
+    router.push("/how");
+  };
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-100 to-gray-100 animate-gradient-x overflow-hidden">
+      {/* Header */}
+      <header className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center backdrop-blur-md bg-white/30 shadow-lg border-b border-teal-200/40 animate-fade-in-slow">
+        <h1 className="text-lg sm:text-xl font-bold text-transparent bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text neon-glow">
+          AIInterview Hub
+        </h1>
+        <button
+          onClick={handleGethow}
+          className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-all duration-300 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-1"
+        >
+          How It Works
+        </button>
+      </header>
+
+      {/* Hero & Content Section */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 flex flex-col items-center text-center animate-slide-up">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 bg-gradient-to-r from-teal-700 to-blue-800 bg-clip-text text-transparent neon-glow mb-6">
+          Master Interviews with AI
+        </h1>
+        <p className="text-lg sm:text-xl text-gray-700 max-w-2xl mb-10 leading-relaxed">
+          Elevate your skills with personalized mock interviews. Input your
+          role, experience, and tech stack for a tailored 5-question session
+          with instant feedback.
+        </p>
+        <button
+          onClick={handleGetStarted}
+          className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 glow-button"
+        >
+          Get Started
+        </button>
+
+        {/* Benefits */}
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          <div className="bg-white/80 backdrop-blur-md p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-teal-200/50">
+            <h3 className="text-xl font-semibold text-teal-700 mb-2">
+              Personalized Prep
+            </h3>
+            <p className="text-gray-600">Tailored to your role and skills.</p>
+          </div>
+          <div className="bg-white/80 backdrop-blur-md p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-teal-200/50">
+            <h3 className="text-xl font-semibold text-teal-700 mb-2">
+              Instant Feedback
+            </h3>
+            <p className="text-gray-600">Real-time performance insights.</p>
+          </div>
+          <div className="bg-white/80 backdrop-blur-md p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-teal-200/50">
+            <h3 className="text-xl font-semibold text-teal-700 mb-2">
+              AI Precision
+            </h3>
+            <p className="text-gray-600">Advanced simulation technology.</p>
+          </div>
+        </div>
+
+        {/* Pricing */}
+        <div className="mt-16 w-full bg-gradient-to-br from-teal-50/80 via-blue-100/50 to-gray-100/80 backdrop-blur-lg rounded-xl p-6 sm:p-8 shadow-2xl border border-teal-200/60 animate-float">
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-6 bg-gradient-to-r from-teal-700 to-blue-800 bg-clip-text text-transparent neon-glow">
+            Pricing Plans
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white/90 backdrop-blur-md p-5 sm:p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-teal-200/50 animate-glow-border">
+              <h3 className="text-lg sm:text-xl font-semibold text-teal-800 mb-2">
+                Basic
+              </h3>
+              <p className="text-gray-700 mb-3 font-medium">Free</p>
+              <ul className="text-gray-600 space-y-2">
+                <li>5 Questions</li>
+                <li>Basic Feedback</li>
+              </ul>
+              <button
+                onClick={handleGetStarted}
+                className="mt-4 bg-teal-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-teal-700 transition-all duration-300 w-full shadow-md hover:shadow-lg transform hover:-translate-y-1"
+              >
+                Start Free
+              </button>
+            </div>
+            <div className="bg-white/90 backdrop-blur-md p-5 sm:p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-teal-200/50 animate-glow-border">
+              <h3 className="text-lg sm:text-xl font-semibold text-teal-800 mb-2">
+                Pro
+              </h3>
+              <p className="text-gray-700 mb-3 font-medium">Premium</p>
+              <ul className="text-gray-600 space-y-2">
+                <li>Unlimited Interviews</li>
+                <li>Detailed Feedback</li>
+                <li>Priority Support</li>
+              </ul>
+              <button className="mt-4 bg-teal-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-teal-700 transition-all duration-300 w-full shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                Upcoming Soon
+              </button>
+            </div>
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      {/* Footer */}
+      <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-600 bg-white/30 backdrop-blur-md rounded-t-lg shadow-inner">
+        <p>© 2025 AIInterview Hub. All rights reserved.</p>
       </footer>
     </div>
   );
