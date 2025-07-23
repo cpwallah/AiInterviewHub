@@ -25,18 +25,29 @@ const Feedback = ({ params }) => {
       .from(UserAnswer)
       .where(eq(UserAnswer.mockIdRef, params.interviewId))
       .orderBy(UserAnswer.id);
-    console.log("🚀 ~ file: page.jsx:11 ~ GetFeedback ~ result:", result);
-    setFeedbackList(result);
+
+    // Deduplicate questions, keeping the answer with longer user response
+    const uniqueQuestions = {};
+    result.forEach(item => {
+      if (!uniqueQuestions[item.question] || 
+          (item.userAns?.length > uniqueQuestions[item.question].userAns?.length)) {
+        uniqueQuestions[item.question] = item;
+      }
+    });
+
+    // Convert to array and take only first 5 questions
+    const deduplicatedList = Object.values(uniqueQuestions).slice(0, 5);
+    console.log("🚀 ~ file: page.jsx:11 ~ GetFeedback ~ deduplicatedList:", deduplicatedList);
+    setFeedbackList(deduplicatedList);
   };
 
-  // Calculate overall rating: (sum of ratings / number of answered questions) / (max possible per question / number of questions)
+  // Calculate overall rating based on 5 questions
   const calculateOverallRating = () => {
     if (feedbackList.length === 0) return 0;
     const totalRating = feedbackList.reduce((sum, item) => sum + (parseInt(item.rating) || 0), 0);
-    console.log("Sum of ratings:", totalRating); // Log the sum of ratings as integers
-    const answeredQuestions = feedbackList.length;
+    console.log("Sum of ratings:", totalRating);
     const maxPossiblePerQuestion = 10; // Each question is out of 10
-    const normalizedRating = (totalRating / (answeredQuestions * maxPossiblePerQuestion)) * 10;
+    const normalizedRating = (totalRating / (5 * maxPossiblePerQuestion)) * 10;
     return Math.round(normalizedRating * 10) / 10; // Round to 1 decimal place
   };
 
@@ -57,7 +68,7 @@ const Feedback = ({ params }) => {
         ) : (
           <>
             <h2 className="text-lg sm:text-xl text-teal-700 bg-teal-50/80 p-3 rounded-lg shadow-md mb-6">
-              Overall Interview Rating: <strong className="text-gold-600">{calculateOverallRating()}/10</strong> (Based on {feedbackList.length} of 5 questions)
+              Overall Interview Rating: <strong className="text-gold-600">{calculateOverallRating()}/10</strong> (Based on 5 questions)
             </h2>
             <p className="text-sm sm:text-base text-gray-600 mb-8">Review your responses and expert feedback for growth.</p>
             {feedbackList && feedbackList.map((item, index) => (
