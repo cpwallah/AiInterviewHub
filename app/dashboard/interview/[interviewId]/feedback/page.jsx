@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { db } from '@/utils/db';
 import { UserAnswer } from '@/utils/schema';
 import { eq } from 'drizzle-orm';
@@ -7,37 +7,67 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import { ChevronsUpDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
 
 const Feedback = ({ params }) => {
   const [feedbackList, setFeedbackList] = useState([]);
+  const [error, setError] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
+    console.log("🚀 ~ params.interviewId:", params.interviewId); // Debug interviewId
     GetFeedback();
   }, []);
 
   const GetFeedback = async () => {
-    const result = await db.select()
-      .from(UserAnswer)
-      .where(eq(UserAnswer.mockIdRef, params.interviewId))
-      .orderBy(UserAnswer.id);
-    console.log("🚀 ~ file: page.jsx:11 ~ GetFeedback ~ result:", result);
-    setFeedbackList(result);
+    try {
+      // Fetch all answers for the given mockIdRef
+      const result = await db
+        .select({
+          id: UserAnswer.id,
+          question: UserAnswer.question,
+          userAns: UserAnswer.userAns,
+          correctAns: UserAnswer.correctAns,
+          feedback: UserAnswer.feedback,
+          rating: UserAnswer.rating,
+        })
+        .from(UserAnswer)
+        .where(eq(UserAnswer.mockIdRef, params.interviewId))
+        .orderBy(UserAnswer.id);
+
+      console.log("🚀 ~ GetFeedback ~ raw result:", result);
+
+      // Filter to get the latest record (highest id) for each question
+      const latestAnswers = Object.values(
+        result.reduce((acc, item) => {
+          if (!acc[item.question] || acc[item.question].id < item.id) {
+            acc[item.question] = item;
+          }
+          return acc;
+        }, {})
+      ).slice(0, 5); // Limit to 5 questions
+
+      console.log("🚀 ~ GetFeedback ~ filtered latestAnswers:", latestAnswers);
+      setFeedbackList(latestAnswers);
+      setError(null);
+    } catch (error) {
+      console.error("Error fetching feedback:", error);
+      setError("Failed to load feedback. Please try again later.");
+    }
   };
 
-  // Calculate overall rating: (sum of ratings / number of answered questions) / (max possible per question / number of questions)
+  // Calculate overall rating
   const calculateOverallRating = () => {
     if (feedbackList.length === 0) return 0;
     const totalRating = feedbackList.reduce((sum, item) => sum + (parseInt(item.rating) || 0), 0);
-    console.log("Sum of ratings:", totalRating); // Log the sum of ratings as integers
+    console.log("Sum of ratings:", totalRating);
     const answeredQuestions = feedbackList.length;
-    const maxPossiblePerQuestion = 10; // Each question is out of 10
+    const maxPossiblePerQuestion = 10;
     const normalizedRating = (totalRating / (answeredQuestions * maxPossiblePerQuestion)) * 10;
-    return Math.round(normalizedRating * 10) / 10; // Round to 1 decimal place
+    return Math.round(normalizedRating * 10) / 10;
   };
 
   return (
@@ -50,7 +80,11 @@ const Feedback = ({ params }) => {
         <h2 className="text-3xl sm:text-4xl font-semibold text-gray-800 bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent drop-shadow-lg mb-8">
           Your Interview Feedback
         </h2>
-        {feedbackList?.length === 0 ? (
+        {error ? (
+          <h2 className="text-xl sm:text-2xl font-medium text-red-500 bg-red-50/80 p-3 rounded-lg shadow-md mb-8">
+            {error}
+          </h2>
+        ) : feedbackList?.length === 0 ? (
           <h2 className="text-xl sm:text-2xl font-medium text-green-500 bg-green-50/80 p-3 rounded-lg shadow-md mb-8">
             No Interview Feedback Available
           </h2>
@@ -60,7 +94,7 @@ const Feedback = ({ params }) => {
               Overall Interview Rating: <strong className="text-gold-600">{calculateOverallRating()}/10</strong> (Based on {feedbackList.length} of 5 questions)
             </h2>
             <p className="text-sm sm:text-base text-gray-600 mb-8">Review your responses and expert feedback for growth.</p>
-            {feedbackList && feedbackList.map((item, index) => (
+            {feedbackList.map((item, index) => (
               <Collapsible key={index} className="mt-6">
                 <CollapsibleTrigger className="p-4 sm:p-5 flex justify-between items-center bg-white/90 backdrop-blur-xl rounded-xl shadow-xl hover:shadow-2xl transition-all duration-500 border border-teal-200/50 animate-float-slow">
                   <span className="text-base sm:text-lg font-medium text-gray-900 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text">
@@ -97,6 +131,6 @@ const Feedback = ({ params }) => {
       </div>
     </div>
   );
-}
+};
 
 export default Feedback;
