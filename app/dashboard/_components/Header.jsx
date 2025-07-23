@@ -105,21 +105,20 @@ function Header() {
 
   useEffect(() => {
     console.log(path);
-    // Close menu when path changes (e.g., after navigation)
-    setIsMenuOpen(false);
+    setIsMenuOpen(false); // Close menu on path change
   }, [path]);
 
   const handleNavigation = (route) => {
     router.push(route);
-    setIsMenuOpen(false); // Close the menu after navigation
+    setIsMenuOpen(false);
   };
 
   return (
-    <header className="flex items-center justify-between p-3 sm:p-4 md:p-5 bg-gradient-to-r from-teal-50 via-blue-50 to-gray-100 shadow-lg border-b border-teal-200/60">
+    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-white shadow-md border-b border-gray-200">
       {/* Logo */}
       <div className="flex-shrink-0">
         <h1
-          className="text-base sm:text-lg md:text-xl font-bold text-transparent bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text cursor-pointer transition-transform duration-300 hover:scale-105"
+          className="text-lg sm:text-xl font-semibold text-gray-800 cursor-pointer"
           onClick={() => handleNavigation('/')}
         >
           AIInterview Hub
@@ -130,7 +129,7 @@ function Header() {
       <div className="md:hidden">
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="text-gray-700 hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 rounded-md p-2"
+          className="text-gray-600 hover:text-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 rounded-md p-2"
           aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isMenuOpen}
         >
@@ -153,40 +152,64 @@ function Header() {
 
       {/* Navigation Menu */}
       <nav
-        className={`fixed inset-0 z-50 bg-white md:bg-transparent md:static md:flex md:items-center md:gap-6 transition-all duration-300 ease-in-out ${
-          isMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full md:opacity-100 md:translate-x-0'
-        } md:flex-row flex-col md:h-auto h-full p-6 md:p-0 md:shadow-none shadow-2xl`}
+        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg border-l border-gray-200 transform transition-transform duration-300 ease-in-out md:static md:w-auto md:h-auto md:bg-transparent md:shadow-none md:border-none md:flex md:items-center md:gap-6 z-50 ${
+          isMenuOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'
+        }`}
         aria-hidden={!isMenuOpen && 'true'}
       >
         {/* Backdrop for mobile */}
         {isMenuOpen && (
           <div
-            className="fixed inset-0 bg-black/50 md:hidden"
+            className="fixed inset-0 bg-black/40 md:hidden"
             onClick={() => setIsMenuOpen(false)}
             aria-hidden="true"
           />
         )}
 
-        <ul className="relative flex flex-col md:flex-row gap-4 md:gap-6 z-10 md:bg-transparent bg-white md:p-0 p-4 rounded-lg">
+        {/* Close Button in Sidebar (Mobile) */}
+        <div className="flex justify-end p-4 md:hidden">
+          <button
+            onClick={() => setIsMenuOpen(false)}
+            className="text-gray-600 hover:text-teal-600 focus:outline-none"
+            aria-label="Close menu"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <ul className="flex flex-col md:flex-row gap-4 px-4 md:px-0 md:gap-6">
           <li
-            className={`text-lg md:text-base py-2 md:py-0 hover:text-teal-700 hover:font-semibold transition-all duration-200 cursor-pointer ${
-              path === '/dashboard' && 'text-teal-700 font-semibold'
+            className={`text-base font-medium text-gray-600 hover:text-teal-600 hover:bg-gray-100 py-2 px-4 rounded-md transition-colors duration-200 cursor-pointer md:bg-transparent ${
+              path === '/dashboard' && 'text-teal-600 bg-gray-100 md:bg-transparent'
             }`}
             onClick={() => handleNavigation('/dashboard')}
           >
             Dashboard
           </li>
           <li
-            className={`text-lg md:text-base py-2 md:py-0 hover:text-teal-700 hover:font-semibold transition-all duration-200 cursor-pointer ${
-              path === '/upgrade' && 'text-teal-700 font-semibold'
+            className={`text-base font-medium text-gray-600 hover:text-teal-600 hover:bg-gray-100 py-2 px-4 rounded-md transition-colors duration-200 cursor-pointer md:bg-transparent ${
+              path === '/upgrade' && 'text-teal-600 bg-gray-100 md:bg-transparent'
             }`}
             onClick={() => handleNavigation('/upgrade')}
           >
             Upgrade
           </li>
           <li
-            className={`text-lg md:text-base py-2 md:py-0 hover:text-teal-700 hover:font-semibold transition-all duration-200 cursor-pointer ${
-              path === '/how' && 'text-teal-700 font-semibold'
+            className={`text-base font-medium text-gray-600 hover:text-teal-600 hover:bg-gray-100 py-2 px-4 rounded-md transition-colors duration-200 cursor-pointer md:bg-transparent ${
+              path === '/how' && 'text-teal-600 bg-gray-100 md:bg-transparent'
             }`}
             onClick={() => handleNavigation('/how')}
           >
@@ -196,7 +219,7 @@ function Header() {
       </nav>
 
       {/* User Button */}
-      <div className="flex-shrink-0">
+      <div className="flex-shrink-0 hidden md:block">
         <UserButton />
       </div>
     </header>
